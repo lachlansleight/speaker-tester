@@ -49,7 +49,12 @@ const SpeakerTester = (): JSX.Element => {
         e => {
             if (e.key === "ArrowLeft") leftAudio.current?.play();
             if (e.key === "ArrowRight") rightAudio.current?.play();
-            if (e.key === "ArrowUp") chordAudio.current?.play();
+            if (e.key === "ArrowUp") {
+                if (playingChord) {
+                    chordAudio.current?.pause();
+                    if (chordAudio.current) chordAudio.current.currentTime = 0;
+                } else chordAudio.current?.play();
+            }
             if (e.key === " ") setAutoplay(cur => !cur);
         },
         [leftAudio, rightAudio, chordAudio, autoplay]
@@ -75,8 +80,12 @@ const SpeakerTester = (): JSX.Element => {
                         className={`${
                             playingChord ? "bg-red-600" : "bg-primary-600"
                         } rounded-full text-4xl px-8 py-8`}
-                        onClick={() => chordAudio.current?.play()}
-                        disabled={playingChord}
+                        onClick={() => {
+                            if (playingChord) {
+                                chordAudio.current?.pause();
+                                if (chordAudio.current) chordAudio.current.currentTime = 0;
+                            } else chordAudio.current?.play();
+                        }}
                     >
                         <FaMusic />
                     </button>
